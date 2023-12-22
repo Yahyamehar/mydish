@@ -48,7 +48,7 @@
                             </li>
 
                             <li class="active">
-                                
+
                                 <NuxtLink to="/dashboardprofile">
                                     <span class="icon">
                                         <svg viewBox="-42 0 512 512.001" xmlns="http://www.w3.org/2000/svg">
@@ -172,33 +172,32 @@
                                 <h6>My Account</h6>
                             </div>
                             <div class="my-account-body">
-                                <form action="#" class="eflux-login-form">
+                                <form @submit.prevent="saveChanges" class="eflux-login-form">
                                     <div class="row">
                                         <div class="col-lg-6">
                                             <div class="input-item">
-                                                <label>Your Name</label>
-                                                <input type="text" name="name">
+                                                <label>First Name</label>
+                                                <input v-model="editedProfile.firstName" type="text" name="firstName" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="input-item">
+                                                <label>Last Name</label>
+                                                <input v-model="editedProfile.lastName" type="text" name="lastName" />
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6">
                                             <div class="input-item">
                                                 <label>Email Address</label>
-                                                <input type="email" name="email">
+                                                <input v-model="editedProfile.email" type="email" name="email" />
                                             </div>
                                         </div>
 
                                         <div class="col-lg-6">
                                             <div class="input-item">
                                                 <label>Mobile Number</label>
-                                                <input type="text" name="number">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="input-item">
-                                                <label>Website</label>
-                                                <input type="text" name="website">
+                                                <input v-model="editedProfile.number" type="text" name="number" />
                                             </div>
                                         </div>
                                     </div>
@@ -217,7 +216,77 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
+const user = ref({
+    // ... your user properties
+});
+
+const editedProfile = ref({
+    firstName: '',
+    lastName: '',
+    email: '',
+    number: '',
+});
+
+const saveChanges = async () => {
+    try {
+        // Assuming you have the user ID stored in localStorage
+        const userId = JSON.parse(localStorage.getItem('user')).userid;
+
+        // Extract data from the ref object
+        const updatedData = editedProfile._value;
+
+        // Make an API call to update the user profile
+        const response = await axios.post('http://localhost:5000/api/update-profile', {
+            userId,
+            newName: updatedData.firstName,
+            newLastName: updatedData.lastName,
+            newEmail: updatedData.email,
+            newNumber: updatedData.number,
+        });
+
+        console.log(response.data.message);
+
+        // Optionally, you can update the local user information in localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        userData.first_name = updatedData.firstName;
+        userData.last_name = updatedData.lastName;
+        userData.email = updatedData.email;
+        userData.phonenumber = updatedData.number;
+
+        localStorage.setItem('user', JSON.stringify(userData));
+
+        // Update the user ref
+        user.value = {
+            username: `${userData.first_name} ${userData.last_name}`,
+            email: userData.email,
+            mobile: userData.phonenumber,
+            // Add other user information fields here
+        };
+
+        // Display a success message with SweetAlert
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Profile updated successfully!',
+        });
+    } catch (error) {
+        console.error(error);
+        // Handle error with SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while updating the profile',
+        });
+    }
+};
 </script>
 
-<style scoped></style>
+
+
+<style scoped>
+/* Add your styles here */
+</style>

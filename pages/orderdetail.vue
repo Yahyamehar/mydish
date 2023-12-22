@@ -16,7 +16,7 @@
                             <p class="price">USD 2342</p>
                         </div>
                         <div>
-                            <a href="track-order-single.html" class="order-btn">Track Order</a>
+                            <NuxtLink to="/track" class="order-btn">Track Order</NuxtLink>
                         </div>
                     </div>
                     <div class="order-details">

@@ -7,17 +7,17 @@
                         <h2>Login</h2>
                         <p>Welcome back! Please sign in to your account.</p>
 
-                        <form action="#" class="eflux-login-form">
+                        <form @submit.prevent="handleLogin" class="eflux-login-form">
                             <div class="input-item">
                                 <label for="email">Email</label>
-                                <input type="email" id="email" name="email" placeholder="Enter your Email Address"
-                                    required />
+                                <input v-model="formData.email" type="email" id="email" name="email"
+                                    placeholder="Enter your Email Address" required />
                             </div>
 
                             <div class="input-item">
                                 <label for="password">Password</label>
-                                <input type="password" id="password" name="password" placeholder="Enter your Password"
-                                    required />
+                                <input v-model="formData.password" type="password" id="password" name="password"
+                                    placeholder="Enter your Password" required />
                             </div>
 
                             <div>
@@ -33,8 +33,7 @@
                         <div class="new-customer-box">
                             <h6>Create a New Account</h6>
                             <p>Sign up for a free account at our store. Registration is quick and easy. It allows you to be
-                                able to
-                                order from our shop. To start shopping, click register.</p>
+                                able to order from our shop. To start shopping, click register.</p>
                             <NuxtLink to="signup" class="signup-btn">Sign Up</NuxtLink>
                         </div>
                     </div>
@@ -44,87 +43,47 @@
     </section>
 </template>
   
+  <!-- Add a loading state -->
+  <script setup>
+  import { ref, getCurrentInstance } from 'vue';
+  import axios from 'axios';
+  import Swal from 'sweetalert2';
   
-<script setup>
-
-</script>
+  const formData = ref({
+    email: '',
+    password: '',
+  });
   
-<style scoped>
-h2 {
-    color: #333;
-}
-
-p {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.eflux-login-form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.input-item {
-    margin-bottom: 20px;
-}
-
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-button.submit {
-    background-color: #3498db;
-    color: #fff;
-    padding: 15px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease;
-}
-
-button.submit:hover {
-    background-color: #2980b9;
-}
-
-.new-customer-container {
-    margin-top: 20px;
-}
-
-.new-customer-box {
-    background-color: #f5f5f5;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.signup-btn {
-    display: inline-block;
-    margin-top: 10px;
-    background-color: #2ecc71;
-    color: #fff;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.signup-btn:hover {
-    background-color: #27ae60;
-}
-</style>
+  const { proxy } = getCurrentInstance();
+  const router = proxy.$router;
+  
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', formData.value);
+  
+      // Store user information in local storage
+      localStorage.setItem('user', JSON.stringify(response.data.user));
+  
+      // Redirect to the profile route or another appropriate route after successful login
+      router.push('/profile');
+  
+      // Display a success message with SweetAlert
+      await Swal.fire({
+        icon: 'success',
+        title: 'Login successful!',
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      console.error(error);
+  
+      // Display a more informative error message
+      await Swal.fire({
+        icon: 'error',
+        title: 'Login Error',
+        text: error.response?.data?.error || 'An unexpected error occurred',
+      });
+    }
+  };
+  </script>
   

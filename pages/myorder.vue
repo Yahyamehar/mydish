@@ -86,7 +86,7 @@
                                                 <td class="px-3 py-4">
                                                     <div>
                                                         <p class="my-balance">My Balance</p>
-                                                        <h6 class="credits">Credits $100</h6>
+                                                        <h6 class="credits">Credits $10</h6>
                                                     </div>
                                                 </td>
                                             </tr>

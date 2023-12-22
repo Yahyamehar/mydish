@@ -21,7 +21,7 @@
                                 <p class="price">USD 2342</p>
                             </div>
                             <div>
-                                <a href="order-details.html" class="order-btn">Order Details</a>
+                                <NuxtLink to="/orderdetail" class="order-btn">Order Details</NuxtLink>
                             </div>
                         </div>
                         <div class="order-details">
