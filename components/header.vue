@@ -2,7 +2,7 @@
     <header class="header">
         <div class="header-top">
             <div class="mobile-header d-flex justify-content-between align-items-center d-xl-none">
-                <NuxtLink to="/" class="logo"><img src="assets/mydish.jpeg" alt="logo" height="70" width="70"
+                <NuxtLink to="/" class="logo"><img :src="companyInfo?.main_logo" alt="logo" height="70" width="70"
                         style="border-radius: 34px;"></NuxtLink>
 
                 <!-- search select -->
@@ -34,7 +34,7 @@
                 <div class="col-2 col-md-1 col-lg-5">
                     <ul class="site-action d-none d-lg-flex align-items-center justify-content-between ml-auto">
                         <li class="site-phone" @click="confirmCall">
-                            <a><i class="fas fa-phone"></i> +49 56895656</a>
+                            <a><i class="fas fa-phone"></i> {{ companyInfo?.phone_number }}</a>
                         </li>
                         <li class="site-help">
                             <NuxtLink to="contact"><i class="fas fa-question-circle"></i> Help & More</NuxtLink>
@@ -61,9 +61,6 @@
                             <li class="item-has-children">
                                 <NuxtLink to="/">Home</NuxtLink>
                             </li>
-                            <li v-if="isLoggedIn">
-                                <NuxtLink to="/myorder">My Order</NuxtLink>
-                            </li>
                             <li>
                                 <NuxtLink to="/about">About Us</NuxtLink>
                             </li>
@@ -87,9 +84,22 @@
 import { ref, onMounted, computed } from 'vue';
 import Swal from 'sweetalert2';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
-const isLoggedIn = ref(false); // Initially, the user is not logged in
+const isLoggedIn = ref(false);
 const router = useRouter();
+const companyInfo = ref(null);
+
+// Function to fetch phone number and logo from the API
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/api/companydetails');
+    companyInfo.value = response.data.companyInfo;
+  } catch (error) {
+    console.error('Error fetching company information:', error.message);
+  }
+});
 
 const confirmCall = () => {
     Swal.fire({
@@ -125,16 +135,20 @@ const logout = () => {
 };
 
 // Check user authentication status when the component is mounted
-onMounted(() => {
-    // You can check local storage for user data or use your authentication mechanism
+onMounted(async () => {
     const userData = JSON.parse(localStorage.getItem('user'));
     if (userData) {
         isLoggedIn.value = true;
     }
+
+    // Fetch phone number and logo from the API
+    await fetchCompanyInfo();
 });
 
 // Computed property to dynamically update UI when isLoggedIn changes
 const showLogout = computed(() => isLoggedIn.value);
 </script>
 
-<style scoped></style>
+<style scoped>
+/* Add any additional styles if needed */
+</style>

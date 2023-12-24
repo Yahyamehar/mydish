@@ -8,7 +8,7 @@
                         <div class="container">
                             <div class="banner-content">
                                 <h6>Organic and fresh food</h6>
-                                <h2>Get freshness delivered<br>on your doorstep.</h2>
+                                <h2>Get freshness delivered<br />on your doorstep.</h2>
                                 <NuxtLink to="/about" class="banner-btn">Read More</NuxtLink>
                             </div>
                         </div>
@@ -24,14 +24,13 @@
                                     <span class="heading-circle green"></span> Our Products
                                 </h4>
                             </div>
-                            <br>
+                            <br />
                             <div class="row">
                                 <!-- Product Cards -->
                                 <div v-for="product in products" :key="product.id" class="col-md-4 mb-4">
                                     <div class="card product-card">
                                         <!-- Display base64-encoded image -->
-                                        <img :src="'data:image/jpeg;base64,' + product.product_image" alt="Product Image"
-                                            class="card-img-top">
+                                        <img :src="product.product_image" alt="Product Image" class="card-img-top" />
                                         <div class="card-body">
                                             <nuxt-link :to="`/${product.id}`">
                                                 <h5 class="card-title">{{ product.product_name }}</h5>
@@ -52,61 +51,60 @@
                 <!-- trending product-section end -->
 
                 <!-- testimonial-section start -->
+                <!-- testimonial-section start -->
                 <section class="testimonial-section">
                     <div class="container">
                         <div class="section-heading">
                             <h4 class="heading-title"><span class="heading-circle"></span>About MyDish</h4>
                         </div>
-                        <br>
+                        <br />
                         <div class="section-wrapper">
-                            <p><b>MyDish: Elevating Culinary Experiences with an Array of Gastronomic Delights</b>
-
-                                <br> <b>Company Overview: </b>
-
-                                Welcome to MyDish, a gastronomic haven based in Germany that transcends the boundaries of
-                                culinary excellence. At MyDish, we are passionate about curating an extensive and diverse
-                                menu, specializing in fish, vegetables, and meat dishes. Our commitment to delivering
-                                unparalleled quality, innovative flavors, and a memorable dining experience makes us a
-                                distinctive player in the culinary landscape.
+                            <p>
+                                <b>{{ companyInfo?.short_description }}</b>
+                                <br />
+                                <b>Company Overview: </b>
+                                {{ companyInfo?.long_description }}
                             </p>
-                            <hr>
-                            <p> <br> <b>Founding Principles:</b>
-
-                                Founded on the principles of culinary innovation, quality ingredients, and an unwavering
-                                dedication to customer satisfaction, MyDish is more than just a restaurant; it's a culinary
-                                journey. Our founders envisioned a space where food enthusiasts could indulge in a symphony
-                                of flavors, embracing the richness of the sea, the bounty of the land, and the savory notes
-                                of expertly prepared meats. </p>
+                            <hr />
                         </div>
                     </div>
                 </section>
                 <!-- testimonial-section end -->
 
+                <!-- testimonial-section end -->
             </div>
         </div>
     </div>
 </template>
-
+  
 <script setup>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 
 const products = ref([]);
+const companyInfo = ref(null);
 
 onMounted(async () => {
     try {
         // Make a GET request to your backend API endpoint that returns the product data
-        const response = await axios.get('http://localhost:5000/api/products');
-        console.log(response.data);
+        const productResponse = await axios.get('http://localhost:5000/api/products');
+        console.log(productResponse.data);
 
         // Assuming the response contains an array of products
-        products.value = response.data.products; // Adjust if needed
+        products.value = productResponse.data.products; // Adjust if needed
+
+        // Make a GET request to the correct company details API endpoint
+        const companyResponse = await axios.get('http://localhost:5000/api/companydetails');
+        console.log(companyResponse.data);
+
+        // Assuming the response contains company info
+        companyInfo.value = companyResponse.data.companyInfo; // Use consistent naming
     } catch (error) {
-        console.error('Error fetching product data:', error.message);
+        console.error('Error fetching data:', error.message);
     }
 });
 </script>
-
+  
   
 <style scoped>
 /* Section Heading */

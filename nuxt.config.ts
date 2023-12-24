@@ -30,15 +30,15 @@ export default defineNuxtConfig({
     baseURL: 'http://localhost:5000', // Replace with your backend server URL
   },
 
-  generate: {
-    routes() {
-      const products = [
-        { id: 1, name: 'salmon-fish' },
-        { id: 2, name: 'sushi' },
-        { id: 3, name: 'vegetable' },
-      ];
+  // generate: {
+  //   routes() {
+  //     const products = [
+  //       { id: 1, name: 'salmon-fish' },
+  //       { id: 2, name: 'sushi' },
+  //       { id: 3, name: 'vegetable' },
+  //     ];
 
-      return products.map((product) => `/products/${product.name}`);
-    },
-  },
+  //     return products.map((product) => `/${product.name}`);
+  //   },
+  // },
 });

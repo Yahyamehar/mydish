@@ -31,12 +31,9 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-3">
                         <div class="footer-widget">
-                            <NuxtLink to="/" class="footer-logo"><img src="assets/mydish.jpeg" alt="logo" height="100"
+                            <NuxtLink to="/" class="footer-logo"><img :src="companyInfo?.footer_logo" alt="logo" height="100"
                                     width="100" style="border-radius: 54px;"></NuxtLink>
-                            <p>Discover a world of flavors, aromas, and culinary wonders at MyDIsh. We are
-                                passionate about bringing the art of cooking to your fingertips, providing a platform where
-                                food lovers and aspiring chefs can come together to explore, learn, and share their
-                                gastronomic adventures. </p>
+                            <p> {{companyInfo?.about_us }}</p>
                             <ul class="social-media-list d-flex flex-wrap">
                                 <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
                                 <li><a href="#"><i class="fab fa-twitter"></i></a></li>
@@ -51,14 +48,8 @@
                             <h5 class="footer-title">Product Catalog</h5>
                             <div class="widget-wrapper">
                                 <ul>
-                                    <li><a href="product-leftsidebar.html">Fruits</a></li>
-                                    <li><a href="product-leftsidebar.html">Salads</a></li>
-                                    <li><a href="product-leftsidebar.html">Fish & Seafood</a></li>
-                                    <li><a href="product-leftsidebar.html">Fresh Meat</a></li>
-                                    <li><a href="product-leftsidebar.html">Health Products</a></li>
-                                    <li><a href="product-leftsidebar.html">Butter & Eggs</a></li>
-                                    <li><a href="product-leftsidebar.html">Oil & Vinegars</a></li>
-                                    <li><a href="product-leftsidebar.html">Health Products</a></li>
+                                    <li><NuxtLink to="/index">Lahmacun</NuxtLink></li>
+                                    <li><NuxtLink to="/index">Dolma</NuxtLink></li>
                                 </ul>
                             </div>
                         </div>
@@ -70,11 +61,6 @@
                             <div class="widget-wrapper">
                                 <ul>
                                     <li><NuxtLink to="about">About Us</NuxtLink></li>
-                                    <li><a href="product-leftsidebar.html">Featured Products</a></li>
-                                    <li><a href="brand-product.html">Offers</a></li>
-                                    <li><a href="blog-rightsidebar.html">Blog</a></li>
-                                    <li><a href="faq.html">Faq</a></li>
-                                    <li><a href="contact.html">Careers</a></li>
                                     <li><NuxtLink to="/contact">Contact Us</NuxtLink></li>
                                 </ul>
                             </div>
@@ -121,7 +107,20 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const companyInfo = ref(null);
+
+onMounted(async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/api/companydetails');
+    companyInfo.value = response.data.companyInfo;
+  } catch (error) {
+    console.error('Error fetching company information:', error.message);
+  }
+});
 
 </script>
 
-<style  scoped></style>
+<style scoped></style>

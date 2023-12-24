@@ -7,19 +7,13 @@
                         <div class="about-content mb-4 mb-lg-0 pr-lg-5">
                             <h2 class="section-title">Our Food Philosophy</h2>
                             <p>
-                                Welcome to a culinary journey where passion meets flavor. At our
-                                restaurant, we believe in crafting not just meals but experiences.
-                            </p>
-                            <p>
-                                Our chefs are dedicated to sourcing the finest ingredients to create
-                                dishes that are not only delicious but also tell a story of
-                                authenticity.
+                                {{ companyInfo?.short_description }}
                             </p>
                         </div>
                     </div>
                     <div class="col-lg-5 order-lg-first">
                         <div class="about-image">
-                            <img src="assets/aboutlogo.png" alt="about image" />
+                            <img :src="companyInfo?.main_logo" alt="about image" />
                         </div>
                     </div>
                 </div>
@@ -27,6 +21,25 @@
         </section>
     </div>
 </template>
+
+<script setup>
+
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const companyInfo = ref(null);
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/api/companydetails');
+        companyInfo.value = response.data.companyInfo;
+    } catch (error) {
+        console.error('Error fetching company information:', error.message);
+    }
+});
+
+
+</script>
   
 <style scoped>
 .about-section {
@@ -51,7 +64,7 @@
 
 .about-image img {
     width: 100%;
-    border-radius: 8px;
+    border-radius: 258px;
 }
 </style>
   

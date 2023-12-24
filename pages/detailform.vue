@@ -6,41 +6,44 @@
                 <div class="col-lg-7">
                     <div class="form-item billing-item bg-color-white box-shadow p-3 p-lg-5 border-radius5">
                         <h6>Billing Detail</h6>
-                        <form action="#" class="billing-form">
+                        <form @submit.prevent="submitForm" class="billing-form">
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="input-item">
                                         <label>First Name*</label>
-                                        <input type="text" name="name">
+                                        <input v-model="firstName" type="text" name="name" required />
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="input-item">
                                         <label>Last Name*</label>
-                                        <input type="text" name="name">
+                                        <input v-model="lastName" type="text" name="name" required />
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
                                     <div class="input-item">
                                         <label>Address*</label>
-                                        <input type="text" placeholder="Write your address" name="address">
-                                        <input type="text" name="address">
+                                        <input v-model="address" type="text" placeholder="Write your address" name="address"
+                                            required />
                                     </div>
                                     <div class="input-item">
                                         <label>Postal Code*</label>
-                                        <input type="text" placeholder="0000-000" name="postal-code">
+                                        <input v-model="postalCode" type="text" placeholder="0000-000" name="postal-code"
+                                            required />
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="input-item">
                                         <label>Email*</label>
-                                        <input type="text" placeholder="***@**.**" name="email">
+                                        <input v-model="email" type="text" placeholder="enter your email" name="email"
+                                            required />
+                                        <span v-if="!email">Email is required</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="input-item">
                                         <label>Mobile*</label>
-                                        <input type="text" placeholder="+49 0000 000" name="mobile">
+                                        <input v-model="mobile" type="text" placeholder="+49 " name="mobile" required />
                                     </div>
                                 </div>
                             </div>
@@ -48,45 +51,61 @@
                     </div>
                     <div class="form-item payment-item bg-color-white box-shadow p-3 p-lg-5 border-radius5">
                         <h6>Payment</h6>
-
                         <form action="#" class="payment-form">
-
-                            <div class="input-item radio">
-                                <input type="radio" name="payment" value="check payment">
-                                <label>Check Payment</label>
-                            </div>
-
-                            <div class="input-item radio">
-                                <input type="radio" name="payment" value="cash on delivary">
-                                <label>Cash on delivary</label>
-                            </div>
-
-                            <div class="input-item radio">
-                                <input type="radio" name="payment" value="paypal">
-                                <label>Paypal</label>
+                            <div class="card-details">
+                                <div class="input-item">
+                                    <label>Card Holder Name*</label>
+                                    <input v-model="cardName" type="text" placeholder="John Doe" required />
+                                </div>
+                                <div class="input-item">
+                                    <label>Card Number*</label>
+                                    <input v-model="cardNumber" type="text" placeholder="**** **** **** ****" required />
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="input-item">
+                                            <label>Expiry Date*</label>
+                                            <input v-model="expireDate" type="text" placeholder="MM/YY" required />
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="input-item">
+                                            <label>CVV*</label>
+                                            <input v-model="cvv" type="text" placeholder="***" required />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                         <div class="payment-image">
-                            <img src="assets/images/payment/01.png" alt="payment">
+                            <img src="assets/images/payment/01.png" alt="payment" />
                         </div>
                         <div class="text-right">
-                            <NuxtLink to="/ordersucess" class="place-order-btn">Place Order</NuxtLink>
+                            <NuxtLink @click="submitForm" :disabled="isSubmitting" class="place-order-btn">
+                                {{ isSubmitting ? 'Placing Order...' : 'Place Order' }}
+                            </NuxtLink>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-5">
                     <div class="cart-item sitebar-cart bg-color-white box-shadow p-3 p-lg-5 border-radius5">
-
                         <div class="cart-footer">
-
                             <div class="cart-total">
                                 <p class="saving d-flex justify-content-between">
                                     <span>Total Savings</span>
-                                    <span></span>
+                                    <span>{{ $route.query.product_name }}</span>
+                                </p>
+                                <p class="total-amount d-flex justify-content-between">
+                                    <span>Price</span>
+                                    <span>${{ $route.query.price }}</span>
+                                </p>
+                                <p class="tax d-flex justify-content-between">
+                                    <span>Tax (10%)</span>
+                                    <span>${{ calculateTax($route.query.price) }}</span>
                                 </p>
                                 <p class="total-price d-flex justify-content-between">
-                                    <span>Total</span>
-                                    <span></span>
+                                    <span>Total Amount</span>
+                                    <span>${{ calculateTotalAmount($route.query.price) }}</span>
                                 </p>
                             </div>
                         </div>
@@ -98,13 +117,200 @@
     <!-- dashboard-section end -->
 </template>
   
-  
 <script setup>
+import { ref } from 'vue';
+import axios from 'axios';
+import Swal from 'sweetalert2';
+import { useRoute, useRouter } from 'vue-router';
 
+const route = useRoute();
+const router = useRouter();
+
+const isSubmitting = ref(false);
+
+const firstName = ref('');
+const lastName = ref('');
+const address = ref('');
+const postalCode = ref('');
+const email = ref('');
+const mobile = ref('');
+
+const cardName = ref('');
+const cardNumber = ref('');
+const expireDate = ref('');
+const cvv = ref('');
+
+let orderNumber; // Define orderNumber outside of the submitForm function
+
+const calculateTax = (price) => {
+    const taxPercentage = 10;
+    const taxAmount = (price * taxPercentage) / 100;
+    return taxAmount.toFixed(2);
+};
+
+const calculateTotalAmount = (price) => {
+    const taxAmount = calculateTax(price);
+    const totalAmount = parseFloat(price) + parseFloat(taxAmount);
+    return totalAmount.toFixed(2);
+};
+
+const submitForm = async () => {
+    if (isSubmitting.value) {
+        return;
+    }
+
+    if (!validateForm()) {
+        return;
+    }
+
+    isSubmitting.value = true;
+
+    let orderNumber;
+
+    try {
+        // Show loading feedback
+        Swal.fire({
+            title: 'Submitting...',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            },
+        });
+
+        // Generate a random order number
+        orderNumber = Math.floor(100000 + Math.random() * 900000);
+
+        await axios.post('http://localhost:5000/api/paymentdetail', {
+            firstName: firstName.value,
+            lastName: lastName.value,
+            address: address.value,
+            postalCode: postalCode.value,
+            email: email.value,
+            mobile: mobile.value,
+            paymentMethod: 'Check Payment',
+            price: route.query.price,
+            cardName: cardName.value,
+            cardNumber: cardNumber.value,
+            expireDate: expireDate.value,
+            cvv: cvv.value,
+        });
+
+        // Close loading feedback and show success message
+        Swal.fire({
+            icon: 'success',
+            title: 'Order Placed Successfully!',
+            text: 'Thank you for your purchase.',
+            confirmButtonText: 'OK',
+        });
+
+        // Redirect to order success page
+        router.push({
+            path: '/ordersucess',
+            query: {
+                orderNumber: orderNumber,
+                email: email.value,
+                price: route.query.price,
+            },
+        });
+    } catch (error) {
+        console.error('Error submitting form:', error);
+
+        // Show error message
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred. Please try again later.',
+            confirmButtonText: 'OK',
+        });
+    } finally {
+        // Close loading feedback
+        Swal.close();
+        isSubmitting.value = false;
+    }
+};
+
+const validateForm = () => {
+    const requiredFields = [firstName, lastName, address, postalCode, email, mobile, cardName, cardNumber, expireDate, cvv];
+
+    if (requiredFields.some((field) => !field.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Please fill out all required fields.',
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    return true;
+};
 </script>
   
+
+
+
+  
 <style scoped>
-    
-    
+.billing-form .submit-btn {
+    background-color: #007bff;
+    /* Blue color, you can customize */
+    color: #fff;
+    /* White text, you can customize */
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.billing-form .submit-btn:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover, you can customize */
+}
+
+.payment-form {
+    margin-top: 20px;
+}
+
+.card-details {
+    margin-top: 20px;
+}
+
+.card-details .input-item {
+    margin-bottom: 15px;
+}
+
+.card-details label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.card-details input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.place-order-btn {
+    background-color: #00ff5e;
+    /* Green color, you can customize */
+    color: #ffffff;
+    /* White text, you can customize */
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin-top: 5px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.place-order-btn:hover {
+    background-color: #218838;
+    /* Darker green on hover, you can customize */
+}
 </style>
   

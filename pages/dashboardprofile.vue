@@ -169,43 +169,33 @@
                     <div class="col-lg-9">
                         <div class="my-account-box">
                             <div class="my-account-header">
-                                <h6>My Account</h6>
+                                <h3> Welcome Back {{ user.username }} </h3>
                             </div>
                             <div class="my-account-body">
-                                <form @submit.prevent="saveChanges" class="eflux-login-form">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="input-item">
-                                                <label>First Name</label>
-                                                <input v-model="editedProfile.firstName" type="text" name="firstName" />
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="input-item">
-                                                <label>Last Name</label>
-                                                <input v-model="editedProfile.lastName" type="text" name="lastName" />
-                                            </div>
-                                        </div>
+                                <div class="container">
+                                    <div class="dashboard-body">
+                                        <div class="profile">
+                                            <h5 class="title">Your Profile <span title="Edit Profile" class="edit"
+                                                    data-toggle="modal"><i></i></span></h5>
 
-                                        <div class="col-lg-6">
-                                            <div class="input-item">
-                                                <label>Email Address</label>
-                                                <input v-model="editedProfile.email" type="email" name="email" />
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6">
-                                            <div class="input-item">
-                                                <label>Mobile Number</label>
-                                                <input v-model="editedProfile.number" type="text" name="number" />
-                                            </div>
+                                            <ul class="list-profile-info list-unstyled">
+                                                <li>
+                                                    <span class="title">Username</span>
+                                                    <span class="desc">{{ user.username }}</span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Email</span>
+                                                    <span class="desc">{{ user.email }}</span>
+                                                </li>
+                                                <li>
+                                                    <span class="title">Mobile</span>
+                                                    <span class="desc">{{ user.mobile }}</span>
+                                                </li>
+                                                <!-- Add other user information fields here -->
+                                            </ul>
                                         </div>
                                     </div>
-
-                                    <div>
-                                        <button type="submit" class="submit">Save Changes</button>
-                                    </div>
-                                </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -216,75 +206,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import axios from 'axios';
-import Swal from 'sweetalert2';
+import { ref, onMounted } from 'vue';
 
 const user = ref({
-    // ... your user properties
-});
-
-const editedProfile = ref({
-    firstName: '',
-    lastName: '',
+    username: '', // Assuming you want to display the first_name and last_name as the username
     email: '',
-    number: '',
+    mobile: '',
+    // Add other user information fields here
 });
 
-const saveChanges = async () => {
-    try {
-        // Assuming you have the user ID stored in localStorage
-        const userId = JSON.parse(localStorage.getItem('user')).userid;
+onMounted(() => {
+    // Retrieve user data from local storage
+    const userData = JSON.parse(localStorage.getItem('user'));
 
-        // Extract data from the ref object
-        const updatedData = editedProfile._value;
-
-        // Make an API call to update the user profile
-        const response = await axios.post('http://localhost:5000/api/update-profile', {
-            userId,
-            newName: updatedData.firstName,
-            newLastName: updatedData.lastName,
-            newEmail: updatedData.email,
-            newNumber: updatedData.number,
-        });
-
-        console.log(response.data.message);
-
-        // Optionally, you can update the local user information in localStorage
-        const userData = JSON.parse(localStorage.getItem('user'));
-        userData.first_name = updatedData.firstName;
-        userData.last_name = updatedData.lastName;
-        userData.email = updatedData.email;
-        userData.phonenumber = updatedData.number;
-
-        localStorage.setItem('user', JSON.stringify(userData));
-
-        // Update the user ref
+    if (userData) {
+        // Set user data
         user.value = {
             username: `${userData.first_name} ${userData.last_name}`,
             email: userData.email,
             mobile: userData.phonenumber,
             // Add other user information fields here
         };
-
-        // Display a success message with SweetAlert
-        Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: 'Profile updated successfully!',
-        });
-    } catch (error) {
-        console.error(error);
-        // Handle error with SweetAlert
-        Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'An error occurred while updating the profile',
-        });
     }
-};
+});
 </script>
-
 
 
 <style scoped>
