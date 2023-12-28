@@ -51,7 +51,7 @@
                     </div>
                     <div class="form-item payment-item bg-color-white box-shadow p-3 p-lg-5 border-radius5">
                         <h6>Payment</h6>
-                        <form action="#" class="payment-form">
+                        <!-- <form action="#" class="payment-form">
                             <div class="card-details">
                                 <div class="input-item">
                                     <label>Card Holder Name*</label>
@@ -76,7 +76,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </form> -->
                         <div class="payment-image">
                             <img src="assets/images/payment/01.png" alt="payment" />
                         </div>
@@ -91,21 +91,9 @@
                     <div class="cart-item sitebar-cart bg-color-white box-shadow p-3 p-lg-5 border-radius5">
                         <div class="cart-footer">
                             <div class="cart-total">
-                                <p class="saving d-flex justify-content-between">
-                                    <span>Total Savings</span>
-                                    <span>{{ $route.query.product_name }}</span>
-                                </p>
                                 <p class="total-amount d-flex justify-content-between">
                                     <span>Price</span>
                                     <span>${{ $route.query.price }}</span>
-                                </p>
-                                <p class="tax d-flex justify-content-between">
-                                    <span>Tax (10%)</span>
-                                    <span>${{ calculateTax($route.query.price) }}</span>
-                                </p>
-                                <p class="total-price d-flex justify-content-between">
-                                    <span>Total Amount</span>
-                                    <span>${{ calculateTotalAmount($route.query.price) }}</span>
                                 </p>
                             </div>
                         </div>
@@ -139,20 +127,6 @@ const cardName = ref('');
 const cardNumber = ref('');
 const expireDate = ref('');
 const cvv = ref('');
-
-let orderNumber; // Define orderNumber outside of the submitForm function
-
-const calculateTax = (price) => {
-    const taxPercentage = 10;
-    const taxAmount = (price * taxPercentage) / 100;
-    return taxAmount.toFixed(2);
-};
-
-const calculateTotalAmount = (price) => {
-    const taxAmount = calculateTax(price);
-    const totalAmount = parseFloat(price) + parseFloat(taxAmount);
-    return totalAmount.toFixed(2);
-};
 
 const submitForm = async () => {
     if (isSubmitting.value) {
@@ -206,7 +180,7 @@ const submitForm = async () => {
 
         // Redirect to order success page
         router.push({
-            path: '/ordersucess',
+            path: '/orderprocess',
             query: {
                 orderNumber: orderNumber,
                 email: email.value,
@@ -231,13 +205,78 @@ const submitForm = async () => {
 };
 
 const validateForm = () => {
-    const requiredFields = [firstName, lastName, address, postalCode, email, mobile, cardName, cardNumber, expireDate, cvv];
+    const requiredFields = [
+        { field: firstName, label: 'First Name' },
+        { field: lastName, label: 'Last Name' },
+        { field: address, label: 'Address' },
+        { field: postalCode, label: 'Postal Code' },
+        { field: email, label: 'Email' },
+        { field: mobile, label: 'Mobile' },
+        { field: cardName, label: 'Card Holder Name' },
+        { field: cardNumber, label: 'Card Number' },
+        { field: expireDate, label: 'Expiry Date' },
+        { field: cvv, label: 'CVV' },
+    ];
 
-    if (requiredFields.some((field) => !field.value)) {
+    const emptyFields = requiredFields.filter((field) => !field.field.value);
+
+    if (emptyFields.length > 0) {
+        const errorMessage = `Please fill out all required fields:\n${emptyFields.map((field) => `- ${field.label}`).join('\n')}`;
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'Please fill out all required fields.',
+            text: errorMessage,
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    // Additional validations
+    if (!/^\d{14}$/.test(cardNumber.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Card number must be 14 digits.',
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    if (!/^\d{2}\/\d{2}$/.test(expireDate.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Expiry date must be in the format MM/YY.',
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    if (!/^\d{3}$/.test(cvv.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'CVV must be 3 digits.',
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Invalid email address.',
+            confirmButtonText: 'OK',
+        });
+        return false;
+    }
+
+    if (!/^\d{5}(-\d{4})?$/.test(postalCode.value)) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Invalid postal code. Must be in the format XXXXX or XXXXX-XXXX.',
             confirmButtonText: 'OK',
         });
         return false;
@@ -246,7 +285,6 @@ const validateForm = () => {
     return true;
 };
 </script>
-  
 
 
 

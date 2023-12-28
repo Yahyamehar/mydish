@@ -6837,7 +6837,7 @@ blockquote span span {
   color: inherit;
 }
 .right-nav-menu li.active a {
-  background-color: #59b828;
+  background-color: #3ba5ac;
   color: white;
 }
 .right-nav-menu li.active a .icon svg {
@@ -6845,7 +6845,7 @@ blockquote span span {
 }
 
 .order-status-nav {
-  border-bottom: 1px solid #59b828;
+  border-bottom: 1px solid #3ba5ac;
   display: flex;
   max-width: 550px;
   margin-bottom: 50px;

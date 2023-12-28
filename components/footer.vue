@@ -48,8 +48,8 @@
                             <h5 class="footer-title">Product Catalog</h5>
                             <div class="widget-wrapper">
                                 <ul>
-                                    <li><NuxtLink to="/index">Lahmacun</NuxtLink></li>
-                                    <li><NuxtLink to="/index">Dolma</NuxtLink></li>
+                                    <li><NuxtLink to="/">Lahmacun</NuxtLink></li>
+                                    <li><NuxtLink to="/">Dolma</NuxtLink></li>
                                 </ul>
                             </div>
                         </div>

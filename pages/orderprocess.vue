@@ -259,11 +259,12 @@
                             </li>
                         </ul>
 
-                        <div class="order-list">
+                        <div>
+                            <section class="order-list">
                                 <div class="order-card mb--30">
                                     <div class="order-card-header d-flex justify-content-between align-items-center">
                                         <span class="deliver process">On Progress</span>
-                                        <span class="date"><i class="far fa-clock"></i> 09/21/2021</span>
+                                        <span class="date"><i class="far fa-clock"></i> {{ getCurrentDate() }}</span>
                                     </div>
                                     <div class="order-card-body">
                                         <table>
@@ -271,54 +272,21 @@
                                                 <tr>
                                                     <th class="text-center">Orders:</th>
                                                     <th class="text-center">Items:</th>
-                                                    <th  class="text-right">Total Payments</th>
+                                                    <th class="text-right">Total Payments</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 <tr>
-                                                    <td class="text-center">#3,345,512</td>
+                                                    <td class="text-center">#{{ orderNumber || 'N/A' }}</td>
                                                     <td class="text-center">02 Items</td>
-                                                    <td class="text-right">$ 112.50</td>
+                                                    <td class="text-right">${{ orderPrice || 'N/A' }}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        <div class="order-info-extra mt--20">
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <h6>Order Status</h6>
-                                                    <ul>
-                                                        <li><i class="fas fa-check"></i> Preparing order</li>
-                                                        <li><i class="fas fa-check"></i> Ready to collect</li>
-                                                        <li><i class="fas fa-check"></i> On the way</li>
-                                                        <li><i class="fas fa-check"></i> Delivered order</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <h6>Destination</h6>
-                                                    <div class="destination-box">
-                                                        <ul>
-                                                            <li>Jone Deo</li>
-                                                            <li>Hastech</li>
-                                                            <li>28 Green Tower,</li>
-                                                            <li>Street Name.</li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex justify-content-end mt--25">
-                                                <a class="order-detail" href="#">Order Details</a>
-                                                <a class="review" href="#">Review</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="order-card-footer">
-                                        <div class="text-center">
-                                            <span class="view">View More</span>
-                                            <span class="show-less">Show Less</span>
-                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </section>
+                        </div>
 
                     </div>
                 </div>
@@ -328,6 +296,15 @@
 </template>
 
 <script setup>
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const getCurrentDate = () => {
+    const date = new Date();
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+};
+
 
 </script>
 

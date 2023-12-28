@@ -7,7 +7,7 @@
                     <div class="iconimage">
                         <img src="assets/images/checkicon.png" alt="icon">
                     </div>
-                    <h2>Your order has been received. To See Your Order Detail you must need to Sign-in</h2>
+                    <h2>Your order has been received. To see your order details, you must sign in.</h2>
                     <NuxtLink to="/signin" class="order-btn">View Order Details</NuxtLink>
                 </div>
                 <div class="order-description">
@@ -27,18 +27,10 @@
                             <span>:</span>
                             <p>${{ $route.query.price || 'N/A' }}</p>
                         </li>
-                        <li>
-                            <h6>Tax (10%)</h6>
-                            <span>:</span>
-                            <p>${{ calculateTax($route.query.price) }}</p>
-                        </li>
-                        <li>
-                            <h6>Total</h6>
-                            <span>:</span>
-                            <p>${{ calculateTotalAmount($route.query.price) }}</p>
-                        </li>
+                        <!-- Remove tax details section -->
+                        <!-- ... (any other content you want to keep) ... -->
                     </ul>
-                    <NuxtLink to="/orderdetails" class="view-summery">View a summary of your order</NuxtLink>
+                    <NuxtLink to="/orderprocess" class="view-summery">View a summary of your order</NuxtLink>
                 </div>
             </div>
         </div>
@@ -56,17 +48,7 @@ const getCurrentDate = () => {
     return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 };
 
-const calculateTax = (price) => {
-    const taxPercentage = 10;
-    const taxAmount = (price * taxPercentage) / 100;
-    return taxAmount.toFixed(2);
-};
-
-const calculateTotalAmount = (price) => {
-    const taxAmount = calculateTax(price);
-    const totalAmount = parseFloat(price) + parseFloat(taxAmount);
-    return totalAmount.toFixed(2);
-};
+// Remove the calculateTax and calculateTotalAmount functions
 </script>
 
 <style scoped>

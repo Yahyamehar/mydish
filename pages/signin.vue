@@ -65,7 +65,7 @@
       localStorage.setItem('user', JSON.stringify(response.data.user));
   
       // Redirect to the profile route or another appropriate route after successful login
-      router.push('/profile');
+      router.push('/dashboardprofile');
   
       // Display a success message with SweetAlert
       await Swal.fire({

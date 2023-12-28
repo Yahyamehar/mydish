@@ -20,7 +20,7 @@
                                 <a href="#" class="cata">Category</a>
                                 <h2>{{ productDetails.product_name }}</h2>
                                 <p class="quantity">{{ productDetails.product_quantity }}</p>
-                                <h3 class="price">${{ productDetails.product_price }} <del>$15</del></h3>
+                                <h3 class="price">${{ productDetails.product_price }} <del>${{ productDetails.discount_price }}</del></h3>
                                 <div class="price-increase-decrease-group">
                                     <button @click="decrementQuantity" class="btn quantity-left-minus" data-type="minus"
                                         data-field="">-</button>
@@ -55,15 +55,7 @@
                         <div class="food-ingredients">
                             <h3>Ingredients</h3>
                             <ul>
-                                <li>{{ productDetails.ingredients1 }}</li>
-                                <hr>
-                                <li>{{ productDetails.ingredients2 }}</li>
-                                <hr>
-                                <li>{{ productDetails.ingredients3 }}</li>
-                                <hr>
-                                <li>{{ productDetails.ingredients4 }}</li>
-                                <hr>
-
+                                <li>{{ productDetails.product_ingredients}}</li>
                                 <!-- Add more ingredients as needed -->
                             </ul>
                         </div>

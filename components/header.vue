@@ -4,32 +4,11 @@
             <div class="mobile-header d-flex justify-content-between align-items-center d-xl-none">
                 <NuxtLink to="/" class="logo"><img :src="companyInfo?.main_logo" alt="logo" height="70" width="70"
                         style="border-radius: 34px;"></NuxtLink>
-
-                <!-- search select -->
-                <div class="text-center mobile-search">
-                    <button type="button" data-toggle="modal" data-target="#search-select-id"><i
-                            class="fas fa-search"></i></button>
-                </div>
-
-                <!-- menubar -->
-                <div>
-                    <button class="menu-bar" type="button" data-toggle="modal" data-target="#menu-id">
-                        Home<i class="fas fa-caret-down"></i>
-                    </button>
-                </div>
             </div>
             <div class="d-none d-xl-flex row align-items-center">
                 <div class="col-5 col-md-2">
                     <NuxtLink to="/" class="logo"><img src="assets/mydish.jpeg" alt="logo" height="70" width="70"
                             style="border-radius: 34px;"></NuxtLink>
-                </div>
-                <div class="col-5 col-md-9 col-lg-5">
-                    <div class="select-search-option d-none d-md-flex">
-                        <form action="#" class="search-form">
-                            <input type="text" name="search" placeholder="Search for Products">
-                            <button class="submit-btn"><i class="fas fa-search"></i></button>
-                        </form>
-                    </div>
                 </div>
                 <div class="col-2 col-md-1 col-lg-5">
                     <ul class="site-action d-none d-lg-flex align-items-center justify-content-between ml-auto">
